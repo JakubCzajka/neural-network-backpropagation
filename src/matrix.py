@@ -1,45 +1,7 @@
-from typing import List
+from typing import List, Tuple
+import random
 import pandas as pd
-
-class Converter():
-    def __init__(self, dataset: pd.DataFrame):
-        column_names = list(dataset['class'].unique())
-
-        self.class_index = {}
-        self.index_class = {}
-
-        self.size = len(column_names)
-
-        for id, name in enumerate(column_names):
-            self.class_index[name] = id
-            self.index_class[id] = name
-
-
-    def encode(self, class_name: str):
-        result = []
-
-        one_position = self.class_index.get(class_name)
-
-        for i in range(self.size):
-            if i != one_position:
-                result.append(0)
-            else:
-                result.append(1)
-
-        return result
-
-    
-    def decode(self, vector: List):
-        max_value = vector[0]
-        max_index = 0
-
-        for i in range(1, len(vector)):
-
-            if vector[i] > max_value:
-                max_value = vector[i]
-                max_index = i
-
-        return self.index_class.get(max_index)
+from converter import Converter
 
 
 
@@ -48,7 +10,7 @@ def dot_product(vector_a: List[float], vector_b: List[float]):
 
 
 class Matrix():
-    def __init__(self, columns: int, rows: int, func):
+    def __init__(self, columns: int, rows: int, func: callable):
         self.matrix = []
         self.columns = columns
         self.rows = rows
@@ -185,6 +147,45 @@ class Matrix():
 
             for col, value in enumerate(converter.encode(class_name)):
                 classes.set(col, i, value)
+
             i+=1
 
         return values, classes
+
+
+def split_dataset(dataset: Tuple[Matrix, Matrix], rate: float):
+
+    def create_matrix_from_rows(rows):
+        result = Matrix(len(rows[0]), len(rows), lambda : 0)
+
+        for row_no, row in enumerate(rows):
+            for col_no, value in enumerate(row):
+                result.set(col_no, row_no, value)
+
+        return result
+
+    x = dataset[0]
+    y = dataset[1]
+
+    x_1 = []
+    y_1 = []
+
+    x_2 = []
+    y_2 = []
+
+    for row in range(x.rows):
+        if random.uniform(0.0, 1.0) < rate:
+            x_1.append(x.get_row(row))
+            y_1.append(y.get_row(row))
+        else:
+            x_2.append(x.get_row(row))
+            y_2.append(y.get_row(row))
+
+    x_train = create_matrix_from_rows(x_1)
+    y_train = create_matrix_from_rows(y_1)
+
+
+    x_test = create_matrix_from_rows(x_2)
+    y_test = create_matrix_from_rows(y_2)
+
+    return (x_train, y_train), (x_test, y_test)

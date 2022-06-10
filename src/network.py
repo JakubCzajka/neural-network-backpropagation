@@ -36,7 +36,7 @@ class NeuralNetwork():
 
         for epoch in range(1, epochs+1):
             error = 0
-            
+            # good_predictions_train = 0
             #train
             for row in range(x_train.rows):
 
@@ -48,16 +48,19 @@ class NeuralNetwork():
 
                 for layer in reversed(self.layers):
                     outputs_gradient = layer.backward(outputs_gradient, learning_rate)
+
+                # if y_test.get_row(row, True) == converter.encode(converter.decode(outputs.get_row(0))):
+                #     good_predictions += 1
         
             #test
-            good_predictions = 0
+            good_predictions_test = 0
 
             for row in range(x_test.rows):
 
                 outputs = self.predict(x_test.get_row(row, False))
                 correct_outputs = y_test.get_row(row, False)
 
-                if y_train.get_row(row, True) == converter.encode(converter.decode(outputs.get_row(0))):
-                    good_predictions += 1
+                if y_test.get_row(row, True) == converter.encode(converter.decode(outputs.get_row(0))):
+                    good_predictions_test += 1
 
-            print(f'Epoch: {epoch}    Error: {round(error, 4)}    Accuracy: {round(good_predictions/x_test.rows, 3)}')
+            print(f'Epoch: {epoch}    Error: {round(error, 4)}    Accuracy: {round(good_predictions_test/x_test.rows, 3)}')
