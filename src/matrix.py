@@ -153,7 +153,7 @@ class Matrix():
         return values, classes
 
 
-def split_dataset(dataset: Tuple[Matrix, Matrix], rate: float):
+def split_dataset(dataset: Tuple[Matrix, Matrix], ratio: float):
 
     def create_matrix_from_rows(rows):
         result = Matrix(len(rows[0]), len(rows), lambda : 0)
@@ -174,7 +174,7 @@ def split_dataset(dataset: Tuple[Matrix, Matrix], rate: float):
     y_2 = []
 
     for row in range(x.rows):
-        if random.uniform(0.0, 1.0) < rate:
+        if random.uniform(0.0, 1.0) < ratio:
             x_1.append(x.get_row(row))
             y_1.append(y.get_row(row))
         else:
