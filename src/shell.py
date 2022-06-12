@@ -1,4 +1,6 @@
 import cmd
+import pickle
+import os
 
 from matrix import Matrix, split_dataset
 from converter import Converter
@@ -64,7 +66,7 @@ class NetworkShell(cmd.Cmd):
         epochs = int(epochs)
         learning_rate = float(learning_rate)
         desired_accuracy = float(desired_accuracy)
-        verbose = verbose in ['Yes', 'yes', 'y', 'Y']
+        verbose = verbose in ['Yes', 'yes', 'y', 'Y', 'True', 'true']
 
         self.results = self.network.train(self.dataset,
                                             self.test_dataset,
@@ -75,6 +77,41 @@ class NetworkShell(cmd.Cmd):
                                             desired_accuracy,
                                             verbose)
         self.prompt = '(state: trained)'
+    
+
+    def do_predict(self, line):
+        'Run predictions on given inputs: predict <input1>:<input2>:...:<inputn>'
+
+        if self.network is None:
+            print('No network created')
+            return
+
+        inputs = [float(s) for s in line.split(':')]
+        input_matrix = Matrix(len(inputs), 1, lambda : 0)
+
+        for col in range(len(inputs)):
+            input_matrix.set(col, 0, inputs[col])
+        
+        result_matrix = self.network.predict(input_matrix)
+        result = self.converter.decode(result_matrix.get_row(0))
+
+        print(result)
+        
+
+    def do_save(self, file):
+        'Save trained model: save <filepath>'
+        if self.network is None:
+            print('No network created')
+            return
+        
+        with open(file, "wb") as model_file:
+            pickle.dump(self.network, model_file)
+    
+
+    def do_load(self, file):
+        'Load network model: load <filepath>'
+        with open(file, "rb") as model_file:
+            self.network = pickle.load(model_file)
 
 
     def postcmd(self, stop: bool, line: str) -> bool:
