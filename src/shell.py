@@ -8,11 +8,12 @@ from network import NeuralNetwork
 from activation_functions import FUNCTIONS as ACTIVATION_FUNCTIONS
 from loss_functions import FUNCTIONS as LOSS_FUNCTIONS
 import pandas as pd
+import matplotlib.pyplot as plt
 
 
 class NetworkShell(cmd.Cmd):
     intro = 'Neural network shell.\nType help or ? to list commands'
-    prompt = '(state: hello)'
+    prompt = '(state: null)'
     results = None
     network = None
     dataset = None
@@ -30,8 +31,9 @@ class NetworkShell(cmd.Cmd):
         ratio = float(ratio)
 
         dataset = pd.read_csv(file, delimiter=',')
-        self.dataset = Matrix.read_dataset(dataset)
         self.converter = Converter(dataset)
+        self.dataset = Matrix.read_dataset(dataset)
+        
 
         self.dataset, self.test_dataset = split_dataset(self.dataset, ratio)
 
@@ -112,6 +114,25 @@ class NetworkShell(cmd.Cmd):
         'Load network model: load <filepath>'
         with open(file, "rb") as model_file:
             self.network = pickle.load(model_file)
+
+    
+    def do_delete_network(self, line):
+        'Delete network'
+        self.network = None
+
+    
+    def do_delete_dataset(self, line):
+        'Delete dataset'
+        self.dataset = None
+        self.test_dataset = None
+        self.converter = None
+
+    
+    def do_plot_results(self, line):
+        df = pd.DataFrame(self.results)
+        plt.figure(1)
+        plt.plot(df['epoch'], df['accuracy'], 'k-')
+        plt.show()
 
 
     def postcmd(self, stop: bool, line: str) -> bool:
