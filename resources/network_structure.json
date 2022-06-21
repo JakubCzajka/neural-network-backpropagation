@@ -1,0 +1,13 @@
+[
+    {
+        "size": 4,
+        "activation": "sigmoid"
+    },
+    {
+        "size": 7,
+        "activation": "ReLU"
+    },
+    {
+        "activation": "sigmoid"
+    }
+]

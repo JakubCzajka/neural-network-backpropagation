@@ -21,7 +21,7 @@ class NetworkShell(cmd.Cmd):
     converter = None
 
     def do_load_dataset(self, line):
-        'Load dataset from CSV file: load_dataset <filepath> <train_rows_percentage>'
+        'Load dataset from CSV file: load_dataset <filepath>:<train_rows_percentage>'
 
         if self.network:
             print('Impossible to load dataset with network created')
