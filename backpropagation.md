@@ -63,3 +63,21 @@ Where $ i $ stands for layer number, $ A $ is vector of neurons' values before a
 $ f(A) $ is element-wise aplication of $ f $ for matrix $ A $
 
 # Backpropagation
+
+Great! Now we know how do neural network process data. But even more important is how they **learn** to correctly classify entries in datasets. One of the most basic algorithms used for neural network lerning is the **backpropagation** algorithm.
+
+## Error function
+
+First task is to evaluate the network on how well it does its job. In order to do so we pass network outputs and correct outputs of train dataset to **error function**. The higher the value of that error function the worse the network performed. One of the most commonly used error functions is the mean squared error function: $$ E_{n} = \frac{(z_{n} - r_{n})^{2}}{2} $$ $ E_{n} $ is error of given neuron in output layer, $ z_{n} $ is that neuron value and $ r_{n} $ is the expected value of that neuron. Error of the network $ E $ is sum of all errors of neurons in output layer.
+
+## Gradient descent
+
+In order to improve performance ot the network we want its error function to be as low as possible. We can do it by finding minimum of error function using for example method known as gradient descent.
+
+Since value of error function depends on all parameters (biases and weights) in network, we have to calculate error function derivatives for all of them.
+
+### Output layer
+
+Let's start by explaining how it works for neurons in output layer, since we've already calculated their errors.
+
+In order to calculate $ \frac{dE}{dw_{i}} $ (derivative of error function with respect to any input weight) of we will apply the chain rule.
