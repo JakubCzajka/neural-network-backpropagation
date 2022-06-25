@@ -3,10 +3,9 @@ from matrix import Matrix
 
 def mean_squared_error_derivative(y_true: Matrix, y_pred: Matrix):
     result = y_pred.add(y_true.apply(lambda x: -x))
-    result = result.multiply(2)
+
 
     size = result.columns
-    result = result.apply(lambda x: x/size)
 
     return result
 

@@ -18,13 +18,13 @@ class Layer():
 
     
     def backward(self, output_gradients: Matrix, learning_rate):
-        output_gradients = output_gradients.multiply_element_wise(self.pre_activation_values.apply(self.derivative))
-        weights_gradient = self.input.transpose().multiply(output_gradients)
+        # dE/dZ * dZ/dA = dE/dA
+        tmp = output_gradients.multiply_element_wise(self.pre_activation_values.apply(self.derivative))
 
-        input_gradient = output_gradients.multiply(self.weights.transpose())
+        input_gradient = tmp.multiply(self.weights.transpose())
 
-        weight_nudges = weights_gradient.multiply(-learning_rate)
-        bias_nudges = output_gradients.multiply(-learning_rate)
+        weight_nudges = self.input.transpose().multiply(tmp).multiply(-learning_rate)
+        bias_nudges = tmp.multiply(-learning_rate)
 
         self.weights = self.weights.add(weight_nudges)
         self.biases = self.biases.add(bias_nudges)
