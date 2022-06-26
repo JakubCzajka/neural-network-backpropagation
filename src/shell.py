@@ -1,6 +1,5 @@
 import cmd
 import pickle
-import os
 import sys
 
 from matrix import Matrix, split_dataset

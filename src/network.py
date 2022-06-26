@@ -1,7 +1,5 @@
 import json
-from tkinter import N
-from typing import List, Tuple
-from matrix import Matrix
+from typing import List
 from layer import Layer
 
 
