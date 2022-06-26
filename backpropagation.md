@@ -120,4 +120,4 @@ In order to calculate input gradient, that will be passed to previous layer, we 
 
 We do also have vector of inputs $ X $, that will be useful in calculating weight nudges, if we multiply the $ X^{t} $ by $ \frac{dE}{dA} $.
 
-Before subtracting nudges from biases and weights, we have to multiply them by a gradient descent parameter known as **learning rate**. It is a small float.
+Before subtracting nudges from biases and weights, we have to multiply them by a gradient descent parameter known as **learning rate**. It is a small float, usually between 0.001 and 0.01.

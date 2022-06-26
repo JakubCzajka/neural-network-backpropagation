@@ -1,6 +1,7 @@
 import cmd
 import pickle
 import os
+import sys
 
 from matrix import Matrix, split_dataset
 from converter import Converter
@@ -56,6 +57,7 @@ class NetworkShell(cmd.Cmd):
     
     def do_train(self, line):
         'Train network on loaded dataset: train <loss function>:<maximum number of epochs>:<learning rate>:<desired accuracy>:<verbose>'
+        
         if self.dataset is None:
             print('No dataset loaded')
             return
@@ -102,37 +104,54 @@ class NetworkShell(cmd.Cmd):
 
     def do_save(self, file):
         'Save trained model: save <filepath>'
+
         if self.network is None:
             print('No network created')
             return
         
-        with open(file, "wb") as model_file:
+        with open(f"{file}_model", "wb") as model_file:
             pickle.dump(self.network, model_file)
+        
+        with open(f"{file}_converter", "wb") as converter_file:
+            pickle.dump(self.converter, converter_file)
     
 
     def do_load(self, file):
         'Load network model: load <filepath>'
-        with open(file, "rb") as model_file:
+
+        with  open(f"{file}_model", "rb") as model_file:
             self.network = pickle.load(model_file)
+        
+        with open(f"{file}_converter", "wb") as converter_file:
+            self.converter = pickle.load(converter_file)
 
     
     def do_delete_network(self, line):
         'Delete network'
+
         self.network = None
+        self.converter = None
 
     
     def do_delete_dataset(self, line):
         'Delete dataset'
+
         self.dataset = None
         self.test_dataset = None
         self.converter = None
 
     
     def do_plot_results(self, line):
+        'Plots network accuracy against epoch.'
+
         df = pd.DataFrame(self.results)
         plt.figure(1)
         plt.plot(df['epoch'], df['accuracy'], 'k-')
         plt.show()
+
+    
+    def do_exit(self, line):
+        sys.exit(0)
 
 
     def postcmd(self, stop: bool, line: str) -> bool:
